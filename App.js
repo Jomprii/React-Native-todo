@@ -12,7 +12,7 @@ import {
 import { CheckBox } from "react-native-elements";
 import styles from "./Style";
 
-const API_URL = "https://api-for-todo.onrender.com/tasks"; // Backend URL
+const API_URL = "https://api-for-todo.onrender.com/tasks";
 
 export default function App() {
   const [task, setTask] = useState("");
@@ -40,7 +40,6 @@ export default function App() {
     if (task.trim()) {
       try {
         if (editingTaskId) {
-          // Find the task being edited
           const taskToEdit = tasks.find((t) => t.id === editingTaskId);
 
           if (!taskToEdit) {
@@ -55,7 +54,7 @@ export default function App() {
             body: JSON.stringify({
               text: task,
               completed: taskToEdit.completed,
-            }), // Include completed status
+            }),
           });
           if (!response.ok) {
             throw new Error("Failed to update task");
@@ -73,7 +72,7 @@ export default function App() {
         }
         setTask("");
         setEditingTaskId(null);
-        fetchTasks(); // Refresh tasks
+        fetchTasks();
       } catch (error) {
         console.error("Error saving task:", error);
       }
@@ -87,16 +86,14 @@ export default function App() {
       if (!response.ok) {
         throw new Error("Failed to delete task");
       }
-      fetchTasks(); // Refresh tasks
+      fetchTasks();
     } catch (error) {
       console.error("Error deleting task:", error);
     }
   };
 
-  // Toggle task completion
   const toggleTaskCompletion = async (id) => {
     try {
-      // Find the task by its ID
       const task = tasks.find((task) => task.id === id);
 
       if (!task) {
@@ -104,18 +101,16 @@ export default function App() {
         return;
       }
 
-      // Send the updated task to the backend
       const response = await fetch(`${API_URL}/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: task.text, completed: !task.completed }), // Include text and completed
+        body: JSON.stringify({ text: task.text, completed: !task.completed }),
       });
 
       if (!response.ok) {
         throw new Error("Failed to update task completion status");
       }
 
-      // Refresh tasks after updating
       fetchTasks();
     } catch (error) {
       console.error("Error toggling task completion:", error);
@@ -135,7 +130,6 @@ export default function App() {
     return true;
   });
 
-  // Fetch tasks on component mount
   useEffect(() => {
     fetchTasks();
   }, []);
